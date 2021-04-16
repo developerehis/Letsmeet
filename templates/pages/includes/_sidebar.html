@@ -1,0 +1,21 @@
+<div class="col-lg-3 col-md-3 col-sm-6 mx-auto">
+    <div class="card bg-light" style="max-width: 30rem;">
+        {% if profile.photos %}
+        <img src="{{ profile.photos.url }}" alt="" class="card-img-top mx-auto rounded-circle">
+        {% else %}
+        <img src="http://placehold.it/200x200" alt="" class="card-img-top mx-auto rounded-circle">
+        {% endif %}
+        <div class="card-body text-center">
+            <h4 class="card-title">
+                <a href="{{ profile.get_absolute_url }}">{{ profile }}</a>
+            </h4>
+
+            {% if request.user == profile.user %}
+            Welcome, {{ profile.user }} <p> <a href="{% url 'pages:logout' %}">Logout</a> </p>
+            {% elif request.user.is_anonymous %}
+            <p> <a href="{% url 'pages:register' %}">Register</a> | <a href="{% url 'pages:login' %}">Login</a></p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
