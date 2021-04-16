@@ -7,18 +7,35 @@ from django.contrib import messages
 from .models import Profile
 from .utils import from_label_to_value
 
-# Create your views here.
+# Create your views function for index page.
 def index(request):
+    users = Profile.objects.all() # variable to get all user from hhe model/Database
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
+        users = Profile.objects.exclude(user=request.user) # exclude login user
     else:
         profile = ''
 
-    context = {
-        'profile': profile
+    context = { #pass vairable to the index page
+        'profile': profile,
+        'users': users,
     }
     return render(request, 'pages/index.html', context)
 
+def search(request):
+    query = request.GET.get('speaks').replace(" ","") # Get all vairable that is passed to the url search box and delete all empty spaces
+    list_speaks = query.split(',')
+    
+    if user.is_authenticated:
+        profile = Profile.objects.get(user=request.user) # Profile variable to fetch all users
+        results = Profile.objects.exclude(id=profile.id).filter(speaks__icontains=list_speaks[0])
+    else:
+        profile = ''
+        results = Profile.objects.filter(speaks__icontain=list_speaks[0])
+
+    return render(request, 'pages/index.html')
+
+# Create your views function for profile  page.
 def profile(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
     context = {

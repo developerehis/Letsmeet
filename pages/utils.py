@@ -24,3 +24,12 @@ def from_label_to_value(request,field):
     else:
         values = ''
     return values
+
+def sort(elements,result, l_s=False, l_l=False):
+    if len(elements)>1:
+        for e in range(len(elements)):
+            if e == 0:
+                continue
+            if l_s:
+                results = results.filter(speaks__icontains=elements[e])
+            

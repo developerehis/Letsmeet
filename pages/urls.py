@@ -9,5 +9,6 @@ urlpatterns = [
     path('register/', register, name="register"),
     path('logout/', logout, name="logout"),
     path('profile/<int:profile_id>', profile, name="profile"),
-    path('edit/', edit_profile, name="edit")
+    path('edit/', edit_profile, name="edit"),
+    path('search/', search, name="search"),
 ]

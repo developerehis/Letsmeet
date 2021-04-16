@@ -2,8 +2,52 @@
 
 
 {% block content %}
-<div class="ro">
+<div class="row">
     {% include 'pages/includes/_sidebar.html' %}
+
+    <!-- search box -->
+     <div class="col-lg-9 col-md-0 col-sm-12">
+         <div class="card bg-light">
+             <div class="card-header text-center">Search For Users</div>
+             <div class="card-body">
+                <form action="{% url 'pages:search' %}" method="get">
+                    <div class="form-group">
+                        <label for="Langspeaks">Speaks</label>
+                        <input type="text" name="speaks" value="{{ request.GET.speaks }}" class="form-control" id="langspeaks" placeholder="value1, value2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Langspeaks">Is Learning</label>
+                        <input type="text" name="learning" class="form-control" id="langlearning" placeholder="value1, value2">
+                    </div>
+                    <button type="submit" class="btn btn-info">Search</button>
+                </form>
+             </div>
+         </div>
+     </div>
+     <!-- end of search box -->
 </div>
+
+<!-- display all users -->
+<div class="row">
+{% for u in users %}
+    <div class="col-md-3 col-sm-6">
+        <div class="card">
+            <img src="{{ u.photo.url }}" alt="card-img-tag mx-auto">
+            <div class="card-body">
+                <h5 class="card-title text-center"><a href="{{ u.get_absolute_url }}">{{ u }}</a></h5>
+                <p class="class-text">
+                    <span><strong>Speaks:</strong> {{ u.speaks }}</span><br>
+                    <span><strong>Is Learning:</strong> {{ u.is_learning }}</span>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+{% endfor %}
+
+</div>
+<!-- end of display all users -->
 {% endblock content %}
 

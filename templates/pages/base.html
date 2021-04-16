@@ -12,12 +12,23 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-md bg-dark navbar-dark">
         <div class="container">
-            <a href="" class="navbar navbar-brand">Letsmeet</a> 
+            <a href="{% url 'pages:index' %}" class="navbar navbar-brand">Letsmeet</a> 
         </div>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                 <li class="nav-item">
+                     <a href="{{ request.user.profile.get_absolute_url }}" class="nav-link">Profile</a>
+                 </li>
+                 {% endif %}
+            </ul>
+
+        </div>
 
     </nav>
 
@@ -33,7 +44,7 @@
     </div>
       {% else %}
     
- <div class="alert alert-{{message.tags}}" role="alert">
+ <div class="alert alert-{{ message.tags }}" role="alert">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times</a>
     {{message}}
 
@@ -48,7 +59,7 @@
     
     <footer class="bg-dark text-white mt-auto">
         <div class="container py-4">
-            <p class="textcenter">Copyright &copy; 2021 Letsmeet. All Rights Reserved by Developer Ehis</p>
+            <p class="textcenter">Copyright &copy; 2021 Letsmeet. Developed by Emmanuel Okaiwele</p>
         </div>
 
     </footer>
