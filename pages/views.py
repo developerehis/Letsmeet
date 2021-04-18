@@ -5,7 +5,8 @@ from django.contrib.auth import logout as do_logout
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from .models import Profile
-from .utils import from_label_to_value
+from .utils import from_label_to_value, sort
+from django.core.paginator import Paginator
 
 # Create your views function for index page.
 def index(request):
@@ -15,25 +16,49 @@ def index(request):
         users = Profile.objects.exclude(user=request.user) # exclude login user
     else:
         profile = ''
+    
+    # pagination variables
+    page_num =  request.GET.get('page')
+    paginator = Paginator(users, 8)
+    page_obj = paginator.get_page(page_num)
 
     context = { #pass vairable to the index page
         'profile': profile,
-        'users': users,
+        'page_obj': page_obj,
     }
     return render(request, 'pages/index.html', context)
 
 def search(request):
     query = request.GET.get('speaks').replace(" ","") # Get all vairable that is passed to the url search box and delete all empty spaces
+    query2 = request.GET.get('learning').replace(" ","") # Get all vairable that is passed to the url search box and delete all empty spaces
+
     list_speaks = query.split(',')
+    list_learning = query2.split(',')
     
-    if user.is_authenticated:
+    if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user) # Profile variable to fetch all users
-        results = Profile.objects.exclude(id=profile.id).filter(speaks__icontains=list_speaks[0])
+        results = Profile.objects.exclude(id=profile.id).filter(speaks__icontains=list_speaks[0]).filter(le_learning__icontains=list_learning[0])
     else:
         profile = ''
-        results = Profile.objects.filter(speaks__icontain=list_speaks[0])
+        results = Profile.objects.filter(speaks__icontains=list_speaks[0]).filter(is_learning__icontains=list_learning[0])
+    
+    results = sort(elements=list_speaks, results=results, l_s=True)
+    results = sort(elements=list_learning, results=results, l_l=True)
 
-    return render(request, 'pages/index.html')
+    # pagination variables
+    page_num =  request.GET.get('page')
+    paginator = Paginator(results, 1)
+    page_obj = paginator.get_page(page_num)
+
+    s = f"speaks={request.GET.get('speaks')}&learning={request.GET.get('learning')}&"
+
+    # context dictionary to pass variable to the index page
+    context = {
+        'profile' : profile,
+        'page_obj' : page_obj,
+        's':s,
+    }
+    return render(request, 'pages/index.html', context)
 
 # Create your views function for profile  page.
 def profile(request, profile_id):

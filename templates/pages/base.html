@@ -35,7 +35,7 @@
     <div class="container mt-4">
 
     {% if  messages %}
-    {% for nesssage in messages %}
+    {% for message in messages %}
 
     {% if message.tags == 'error' %}
     <div class="alert alert-danger" role="alert">
@@ -56,7 +56,29 @@
         {% block content %}
         {% endblock content %}
     </div>
+
+    <!-- Pagination -->
+
+    {% if page_obj.has_other_pages %}
+    <ul class="pagination justify-content-center">
+        {% for p in page_obj.paginator.page_range  %}
+
+            {% if page_obj.number == p %}
+           <li class="page-item">
+               <a href="?{{s}}page={{ p }}" class="page-link">{{ p }}</a>
+           </li>
+           {% else %}
+           <li class="page-item-active">
+               <a href="?{{s}}page={{ p }}" class="page-link">{{ p }}</a>
+           </li>
+           {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
     
+    <!-- End of Pagination -->
+
+
     <footer class="bg-dark text-white mt-auto">
         <div class="container py-4">
             <p class="textcenter">Copyright &copy; 2021 Letsmeet. Developed by Emmanuel Okaiwele</p>

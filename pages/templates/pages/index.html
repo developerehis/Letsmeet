@@ -18,7 +18,7 @@
 
                     <div class="form-group">
                         <label for="Langspeaks">Is Learning</label>
-                        <input type="text" name="learning" class="form-control" id="langlearning" placeholder="value1, value2">
+                        <input type="text" name="learning" value="{{ request.GET.learning }}" class="form-control" id="langlearning" placeholder="value1, value2">
                     </div>
                     <button type="submit" class="btn btn-info">Search</button>
                 </form>
@@ -27,10 +27,10 @@
      </div>
      <!-- end of search box -->
 </div>
-
+<hr>
 <!-- display all users -->
 <div class="row">
-{% for u in users %}
+{% for u in page_obj %}
     <div class="col-md-3 col-sm-6">
         <div class="card">
             <img src="{{ u.photo.url }}" alt="card-img-tag mx-auto">

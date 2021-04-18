@@ -12,7 +12,7 @@ LANGUAGE_CHOICES = (
     ("10","Chineese"),
 )
 
-def from_label_to_value(request,field):
+def from_label_to_value(request, field):
     if field == 'speaks':
         labels = request.user.profile.speaks
     else:
@@ -25,11 +25,14 @@ def from_label_to_value(request,field):
         values = ''
     return values
 
-def sort(elements,result, l_s=False, l_l=False):
+def sort(elements,results, l_s=False, l_l=False):
     if len(elements)>1:
         for e in range(len(elements)):
             if e == 0:
                 continue
             if l_s:
                 results = results.filter(speaks__icontains=elements[e])
-            
+            if l_l:
+                results = results.filter(speaks__icontains=elements[e])
+    return results
+
