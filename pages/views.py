@@ -142,6 +142,7 @@ def send_request(request, to_profile_id):
         )
         return redirect('pages:profile', profile_id=to_profile.id)
 
+#Cancel request function
 def cancel_request(request, to_profile_id):
     if request.user.is_authenticated:
         to_profile = Profile.objects.get(pk=to_profile_id)
@@ -153,4 +154,34 @@ def cancel_request(request, to_profile_id):
         frequest.delete()
         
         return redirect('pages:profile', profile_id=to_profile.id)
+
+def accept_friend_request(request, from_profile_id):
+        from_profile = Profile.objects.get(pk=from_profile_id)
+        frequest = FriendRequest.objects.filter(
+            from_profile = from_profile,
+            to_profile = request.user.profile
+        ).first()
+        p1 = frequest.to_profile
+        p2 = from_profile
+        p1.friends.add(p2)
+        frequest.delete()
+        
+        return redirect('pages:profile', profile_id=p1.id)
+
+def delete_friend_request(request, from_profile_id):
+        from_profile = Profile.objects.get(pk=from_profile_id)
+        frequest = FriendRequest.objects.filter(
+            from_profile = from_profile,
+            to_profile = request.user.profile
+        ).first()
+
+        frequest.delete()
+
+        return redirect('pages:profile', profile_id=request.user.profile.id)
+
+def unfriend(request,  profile_id):
+    profile_to_unfriend = Profile.objects.get(id=profile_id)
+    profile = request.user.profile
+    profile.friends.remove(profile_to_unfriend)
+    return redirect('pages:profile',  profile_id=profile_id)
 
