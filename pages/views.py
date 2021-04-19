@@ -4,7 +4,7 @@ from django.contrib.auth import login as do_login
 from django.contrib.auth import logout as do_logout
 from django.contrib.auth import authenticate
 from django.contrib import messages
-from .models import Profile
+from .models import Profile, FriendRequest
 from .utils import from_label_to_value, sort
 from django.core.paginator import Paginator
 
@@ -16,7 +16,8 @@ def index(request):
         users = Profile.objects.exclude(user=request.user) # exclude login user
     else:
         profile = ''
-    
+    #print(profile.coming_from_profile.all())
+    #print(profile.to_profile.all())
     # pagination variables
     page_num =  request.GET.get('page')
     paginator = Paginator(users, 8)
@@ -63,8 +64,21 @@ def search(request):
 # Create your views function for profile  page.
 def profile(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
+    friends = profile.friends.all()
+    received_requests = FriendRequest.objects.filter(to_profile=profile)
+
+    btn_text = ''
+    if request.user.is_authenticated:
+        if profile not in request.user.profile.friends.all():
+            btn_text = 'not_friend'
+            if len(FriendRequest.objects.filter(from_profile=request.user.profile).filter(to_profile=profile))==1:
+                btn_text = 'request_sent'
+
     context = {
-        'profile': profile
+        'profile': profile,
+        'friends': friends,
+        'received_requests': received_requests,
+        'btn_text': btn_text
     }
     return render(request, 'pages/profile.html', context)
 
@@ -119,4 +133,24 @@ def register(request):
         form = RegisterForm()
     return render(request, 'pages/register.html',{'form':form})
 
+def send_request(request, to_profile_id):
+    if request.user.is_authenticated:
+        to_profile = Profile.objects.get(pk=to_profile_id)
+        frequest = FriendRequest.objects.get_or_create(
+            from_profile = request.user.profile,
+            to_profile = to_profile
+        )
+        return redirect('pages:profile', profile_id=to_profile.id)
+
+def cancel_request(request, to_profile_id):
+    if request.user.is_authenticated:
+        to_profile = Profile.objects.get(pk=to_profile_id)
+        frequest = FriendRequest.objects.filter(
+            from_profile = request.user.profile,
+            to_profile = to_profile
+        ).first()
+
+        frequest.delete()
+        
+        return redirect('pages:profile', profile_id=to_profile.id)
 

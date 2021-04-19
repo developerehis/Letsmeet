@@ -10,6 +10,18 @@
         <div class="float-right">
             <a href="{% url 'pages:edit' %}" class="btn btn-info">Edit Profile</a>
         </div>
+
+        {% elif request.user.is_authenticated %}
+        {% if  btn_text == 'not_friend' %}
+        <div class="float-right">
+            <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-primary">Add Friend</a>
+        </div>
+        {% elif btn_text == 'request_sent' %}
+        <div class="float-right">
+            <a href="{% url 'pages:cancel_request' profile.id %}" class="btn btn-warning">Cancel Request</a>
+        </div>
+
+        {% endif %}
         {% endif %}
 
         <h3>{{ profile.user }}</h3>
@@ -18,6 +30,22 @@
             <h6><strong>Speaks: </strong>{{ profile.speaks }}</h6>
             <h6><strong>Is Learning:</strong> {{ profile.is_learning }}</h6>
         </div>
+
+        {% if request.user.profile.id == profile.id and received_request %}
+        <div class="table-responsive">
+            <table class="table">
+                <caption>Received Friend Requests</caption>
+                <tbody>
+                    {% for r_request in received_requests %}
+                    <tr>
+                        <td>{{ r_request }}</td>
+                    
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
     </div>
 </div>
 
