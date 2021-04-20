@@ -1,0 +1,64 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+<div class="row">
+    {% include 'pages/includes/_sidebar.html' %}
+
+    <div class="col-md-9 col-sm-12">
+
+        
+       <div class="table-responsive">
+            <table class="table">
+                <caption>Current Chat List </caption>
+                <thead>
+                    <tr>
+                        <th>Chat</th>
+                        <th>Unread</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cd in chat_details %}
+                    <tr>
+
+                        <td><a href="">{{ forloop.counter }} Chat with {{ cd.profile }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+         <!-- Start Chat with friends -->
+        {% if friends %}
+          <div class="table-responsive">
+            <table class="table">
+                <caption>Start a new chat with: </caption>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in friends %}
+                    <tr>
+                        <td>{{ f }}</td>
+                        <td>{{ f.user.email }}</td>
+                        {% if request.user.profile.id == profile.id %}
+                        <td><a href="{% url 'conversations:inbox_new_chat' f.id %}" class="btn btn-outline-info">Start Chatting</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <!-- End start chat with friends -->
+
+     </div>
+</div>
+
+{% endblock content %} 
+
+
+
+
