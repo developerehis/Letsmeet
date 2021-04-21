@@ -20,7 +20,12 @@
                     {% for cd in chat_details %}
                     <tr>
 
-                        <td><a href="">{{ forloop.counter }} Chat with {{ cd.profile }}</a></td>
+                        <td><a href="{% url 'conversations:chatbox' cd.chat_id %}">
+                        {{ forloop.counter }} Chat with {{ cd.profile }}</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'conversations:delete_chat' cd.chat_id %}" class="btn btn-outline-danger">Delete Chat</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
