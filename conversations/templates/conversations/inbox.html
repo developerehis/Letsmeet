@@ -17,12 +17,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cd in chat_details %}
+                    {% for cd,u in chat_details %}
                     <tr>
 
                         <td><a href="{% url 'conversations:chatbox' cd.chat_id %}">
                         {{ forloop.counter }} Chat with {{ cd.profile }}</a>
                         </td>
+                        <td>
+                            {% if u != False %}
+                                <h5><span class="badge  badge-primary badge-pill">{{ u }}</span></h5>
+                            {% endif %}
+                        </td>
+                            
                         <td>
                             <a href="{% url 'conversations:delete_chat' cd.chat_id %}" class="btn btn-outline-danger">Delete Chat</a>
                         </td>

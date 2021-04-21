@@ -20,7 +20,6 @@ def inbox(request,profile_friend=None):
                 member.save()
                 return redirect('conversations:inbox')
 
-
         new_chat = Chat()
         new_chat.save()
         m1 = Chat_members(chat=new_chat,profile=profile,deleted=False,last_viewed=timezone.now())
@@ -32,6 +31,7 @@ def inbox(request,profile_friend=None):
     chat_ids = profile.chats.all().values_list('chat_id', flat=True)
     chats = Chat.objects.filter(id__in=chat_ids)
     chatting_with = []
+    unread = []
 
     for c in chats:
         profile_chat_member = c.members.get(profile=profile)
@@ -40,10 +40,21 @@ def inbox(request,profile_friend=None):
             chatting_with.append(friend_chat_member)
             friends = friends.exclude(user=friend_chat_member.profile.user)
 
+            if c.get_msg.count()>0:
+                m_date = c.get_msg.values('date').latest('date')
+                lv_date = c.members.filter(profile=profile).values('last_viewed').first()
+                if m_date['date']>lv_date['last_viewed']:
+                    msg_count = c.get_msg.filter(date__gt=lv_date['last_viewed']).count()
+                    unread.append(msg_count)
+                else:
+                    unread.append(False)
+            else:
+                unread.append(False)
+
     context = {
         'profile' :profile,
         'friends' :friends,
-        'chat_details' :chatting_with,
+        'chat_details' :zip(chatting_with,unread),
     }
     return render(request, 'conversations/inbox.html', context)
 
@@ -86,3 +97,8 @@ def delete_chat(request, chat_id):
     if friend.deleted == True:
         chat.delete()
     return redirect('conversations:inbox')
+
+def delete_message(request, message_id):
+    msg = Message.objects.get(id=message_id)
+    msg.delete()
+    return redirect('conversations:chatbox', chat_id=msg.chat_id)

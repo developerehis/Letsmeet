@@ -11,6 +11,11 @@
             <div class="card {% if request.user.profile == m.profile %} ml-auto text-light bg-dark {% endif %}" style="width: 20rem">
                 <div class="card-header font-weight-bold">
                     {{ m.profile }} | {{ m.date }}
+                    {% if request.user.profile == m.profile %}
+                    <a href="{% url 'conversations:delete_message' m.id %}" class="close text-light">
+                        <span>&times;</span>
+                    </a>
+                    {% endif %}
                 </div>
                 <div class="card-body">
                     {{ m }}
@@ -35,6 +40,14 @@
 
 {% endblock content %} 
 
+<!-- Automatic page and chat scrolling -->
+{% block js %}
+<script>
+    var d = $('#messageFeed');
+    d.scrollTop(d.prop("scrollHeight"));
 
+    $('html,body').animate({scrollTop:$(document).height()},'slow');
 
-
+</script>
+{% endblock js %}
+<!-- End of Automatic page and chat scrolling -->
